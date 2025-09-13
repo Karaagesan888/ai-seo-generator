@@ -1,20 +1,21 @@
-import { GoogleGenerativeAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { SiteData, Article } from '../types';
 
 // 環境変数からAPIキーを取得
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
+const apiKey = process.env.GEMINI_API_KEY;
 
 if (!apiKey) {
   console.error('Gemini API key not found. Please set GEMINI_API_KEY environment variable.');
 }
 
-const genAI = new GoogleGenerativeAI(apiKey);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const genAI = new GoogleGenerativeAI(apiKey || '');
 
 export const generateSeoSite = async (siteName: string, siteKeywords: string): Promise<SiteData> => {
   if (!apiKey) {
     throw new Error('Gemini API key is not configured. Please add GEMINI_API_KEY to environment variables.');
   }
+
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const prompt = `
     You are an expert SEO content strategist and web designer.
@@ -35,7 +36,7 @@ export const generateSeoSite = async (siteName: string, siteKeywords: string): P
         },
         {
           "path": "/about",
-          "title": "About Us",
+          "title": "About Us", 
           "content": "About page content in Markdown format",
           "articles": []
         },
@@ -51,15 +52,15 @@ export const generateSeoSite = async (siteName: string, siteKeywords: string): P
               "metaDescription": "SEO description around 150 characters"
             },
             {
-              "slug": "article-slug-2", 
-              "title": "Article Title 2",
+              "slug": "article-slug-2",
+              "title": "Article Title 2", 
               "content": "Article content in Markdown with ## headings and * lists",
               "metaDescription": "SEO description around 150 characters"
             },
             {
               "slug": "article-slug-3",
-              "title": "Article Title 3", 
-              "content": "Article content in Markdown with ## headings and * lists",
+              "title": "Article Title 3",
+              "content": "Article content in Markdown with ## headings and * lists", 
               "metaDescription": "SEO description around 150 characters"
             }
           ]
@@ -77,7 +78,7 @@ export const generateSeoSite = async (siteName: string, siteKeywords: string): P
     
     console.log('AI Response:', text);
     
-    // JSONを抽出（バックティックで囲まれている場合があるため）
+    // JSONを抽出
     const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/) || text.match(/\{[\s\S]*\}/);
     const jsonString = jsonMatch ? (jsonMatch[1] || jsonMatch[0]) : text;
     
@@ -106,6 +107,8 @@ export const generateNewArticles = async (articleKeywords: string, existingTitle
     throw new Error('Gemini API key is not configured');
   }
 
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
   const prompt = `
     Generate 3 new, unique blog articles based on these keywords: "${articleKeywords}"
     
@@ -116,14 +119,14 @@ export const generateNewArticles = async (articleKeywords: string, existingTitle
     [
       {
         "slug": "url-friendly-slug-1",
-        "title": "Unique Article Title 1", 
+        "title": "Unique Article Title 1",
         "content": "Full article content with ## headings and * lists in Markdown",
         "metaDescription": "SEO description around 150 characters"
       },
       {
-        "slug": "url-friendly-slug-2",
+        "slug": "url-friendly-slug-2", 
         "title": "Unique Article Title 2",
-        "content": "Full article content with ## headings and * lists in Markdown", 
+        "content": "Full article content with ## headings and * lists in Markdown",
         "metaDescription": "SEO description around 150 characters"
       },
       {
