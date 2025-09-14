@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Header } from './components/Header';
 import { SeoForm } from './components/SeoForm';
 import { SitePreview } from './components/SitePreview';
+import { ExportButton } from './components/ExportButton';
 import { generateSeoSite, generateNewArticles } from './services/geminiService';
 import type { SiteData, Article, Page } from './types';
 
@@ -57,7 +58,6 @@ const App: React.FC = () => {
     }
   }, [siteData, stopAutoPosting]);
 
-
   const startAutoPosting = useCallback(() => {
     // 最初の記事をすぐに生成
     fetchAndAddNewArticles();
@@ -104,6 +104,16 @@ const App: React.FC = () => {
                 <div className="bg-white p-4 rounded-xl shadow-md border-l-4 border-green-500">
                   <h3 className="font-semibold text-slate-800">自動投稿ステータス</h3>
                   <p className="text-sm text-slate-600 mt-1">{autoPostStatus}</p>
+                </div>
+              )}
+              {siteData && (
+                <div className="bg-white p-4 rounded-xl shadow-md border-l-4 border-blue-500">
+                  <h3 className="font-semibold text-slate-800 mb-3">サイトのエクスポート</h3>
+                  <p className="text-sm text-slate-600 mb-3">
+                    生成されたサイトをHTMLファイルとしてダウンロードし、
+                    お好みのサーバーにアップロードできます。
+                  </p>
+                  <ExportButton siteData={siteData} />
                 </div>
               )}
             </div>
