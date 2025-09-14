@@ -222,7 +222,7 @@ const generateHTMLPage = (
 // 個別ファイルダウンロード機能
 export const downloadFile = (filename: string, content: string): void => {
   const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
-  const url = window.URL.createObjectURL(content);
+  const url = window.URL.createObjectURL(blob); // ← この行を修正
   const link = document.createElement('a');
   link.href = url;
   link.download = filename;
@@ -232,7 +232,6 @@ export const downloadFile = (filename: string, content: string): void => {
   document.body.removeChild(link);
   window.URL.revokeObjectURL(url);
 };
-
 // メインの生成関数
 export const generateStaticSite = async (siteData: SiteData): Promise<void> => {
   try {
